@@ -4,15 +4,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
 public class Main {
-	protected static Logger logger = Logger.getLogger("RandomSeat");
+	protected static Logger logger = LoggerFactory.getLogger("RandomSeat");
 	public static ArrayList<Student> students;
 	public static ArrayList<Student> males = new ArrayList<>();
 	public static ArrayList<Student> females = new ArrayList<>();
@@ -26,7 +27,6 @@ public class Main {
 
 	public static void loadResources() {
 		logger.info("Loading resources.....");
-		
 		try {
 			File configFolder = new File("./config");
 			if (!configFolder.exists()) {
@@ -90,7 +90,7 @@ public class Main {
 			Printer.loadTemplate(seatTemplate);
 
 		} catch (Exception e) {
-			logger.log(Level.WARNING, "", e);
+			logger.error("",e);
 		}
 	}
 
@@ -116,7 +116,7 @@ public class Main {
 			}
 
 		} catch (Exception e) {
-			logger.log(Level.WARNING, "", e);
+			logger.error("",e);
 		}
 	}
 

@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.Level;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -27,7 +26,7 @@ public class Printer {
 								Main.logger.info("Loading the template...");
 								template = new XSSFWorkbook(file);
 							} catch (InvalidFormatException | IOException e) {
-								Main.logger.log(Level.WARNING, "", e);
+								Main.logger.error("",e);
 							}
 			}
 			
@@ -44,7 +43,8 @@ public class Printer {
 					resultFolder.mkdirs();
 				}
 				
-				File resultStorage = new File(resultFolder, new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new Date()));
+				String date = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new Date());
+				File resultStorage = new File(resultFolder, date);
 				if (!resultStorage.exists()) {
 					resultStorage.mkdirs();
 				}
@@ -53,12 +53,12 @@ public class Printer {
 					resultStorage.mkdirs();
 				}
 				
-				File excelFile = new File(resultStorage, "result.xlsx");
+				File excelFile = new File(resultStorage, "result-"  + date + ".xlsx");
 				if (excelFile.exists()) {
 					excelFile.delete();
 				}
 				
-				File jsonFile = new File(resultStorage, "result.json");
+				File jsonFile = new File(resultStorage, "result-"  + date +  ".json");
 				if (jsonFile.exists()) {
 					jsonFile.delete();
 				}
@@ -72,7 +72,7 @@ public class Printer {
 				try {
 					Runtime.getRuntime().exec("explorer.exe " + excelFile.getAbsolutePath());
 				} catch (IOException e) {
-					Main.logger.log(Level.WARNING, "", e);
+					Main.logger.error("",e);
 				}
 			}
 			
@@ -104,7 +104,7 @@ public class Printer {
 					
 					Main.logger.info("Result formatted with Excel has saved to " + target.getPath());
 				}catch (Exception e) {
-					Main.logger.log(Level.WARNING, "", e);
+					Main.logger.error("",e);
 				}
 				
 			}
@@ -117,7 +117,7 @@ public class Printer {
 						
 						Main.logger.info("Result formatted with Json has saved to " + target.getPath());
 					} catch (JsonIOException | IOException e) {
-						Main.logger.log(Level.WARNING, "", e);
+						Main.logger.error("",e);
 					}
 			}
 }
