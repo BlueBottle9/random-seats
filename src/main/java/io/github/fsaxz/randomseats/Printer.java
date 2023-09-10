@@ -93,7 +93,7 @@ public class Printer {
 							for (Seat seat : assignment.keySet()) {
 								String value = cell.getStringCellValue().replaceFirst("#","");
 								if (seat.getFullID().equals(value)) {
-									cell.setCellValue(assignment.get(seat).getName());
+									cell.setCellValue(assignment.get(seat).getName() + assignment.get(seat).getSex());
 								}
 							}
 						}

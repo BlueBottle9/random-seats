@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tomlj.Toml;
+import org.tomlj.TomlParseResult;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,11 +20,12 @@ public class Main {
 	public static ArrayList<Student> males = new ArrayList<>();
 	public static ArrayList<Student> females = new ArrayList<>();
 	public static ArrayList<SeatGroup> seatGruops;
+	public static TomlParseResult configuration;
 
 	public static void main(String[] args) {
 		logger.info("RandomSeats 0.0.1-SNAPSHOT, by FsaxZ");
 		loadResources();
-		Printer.print(Assignment.assign(seatGruops, males, females));
+		Printer.print(Assignment.assign(seatGruops, females,males));
 	}
 
 	public static void loadResources() {
@@ -60,6 +63,14 @@ public class Main {
 				seatTemplate.delete();
 				flag = true;
 			}
+			
+			File configFile = new File(configFolder, "config.toml");
+			if (!configFile.exists()) {
+				flag = true;
+			} else if (!configFile.isFile()) {
+				configFile.delete();
+				flag = true;
+			}
 
 			if (flag) {
 				copyDefaultResources();
@@ -87,8 +98,13 @@ public class Main {
 					new TypeToken<ArrayList<SeatGroup>>() {
 					}.getType());
 
+			logger.info("Loading the Excel template...");
 			Printer.loadTemplate(seatTemplate);
 
+			logger.info("Loading config...");
+			
+			configuration = Toml.parse(configFile.toPath());
+			
 		} catch (Exception e) {
 			logger.error("",e);
 		}
@@ -99,24 +115,39 @@ public class Main {
 			File config = new File("./config/list.json");
 			File seatsConfig = new File("./config/seats.json");
 			File seatsTemplate = new File("./config/template.xlsx");
+			File configFile = new File("./config/config.toml");
 			
 			if (!config.exists()) {
 				logger.info("list.json is not found, loading default config");
-				Files.copy(Main.class.getResourceAsStream("/resources/list.json"), config.toPath());
+				copyResource("list.json");
 			}
 
 			if (!seatsConfig.exists()) {
 				logger.info("seats.json is not found, loading default config");
-				Files.copy(Main.class.getResourceAsStream("/resources/seats.json"), seatsConfig.toPath());
+				copyResource("seats.json");
 			}
 
 			if (!seatsTemplate.exists()) {
 				logger.info("template.xlsx is not found, loading default config");
-				Files.copy(Main.class.getResourceAsStream("/resources/template.xlsx"), seatsTemplate.toPath());
+				copyResource("template.xlsx");
+			}
+			
+			if (!configFile.exists()) {
+				logger.info("config.toml is not found, loading default config");
+				copyResource("config.toml");
 			}
 
 		} catch (Exception e) {
 			logger.error("",e);
+		}
+	}
+	
+	private static void copyResource(String name) {
+		try {
+			Files.copy(Main.class.getResourceAsStream("/resources/" + name), new File("./config/" + name).toPath());
+			//Files.copy(Main.class.getResourceAsStream("/" + name), new File("./config/" + name).toPath());
+		}catch (Exception e) {
+			logger.error("", e);
 		}
 	}
 
