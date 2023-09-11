@@ -23,7 +23,7 @@ public class Main {
 	public static TomlParseResult configuration;
 
 	public static void main(String[] args) {
-		logger.info("RandomSeats 0.0.1-SNAPSHOT, by FsaxZ");
+		logger.info("RandomSeats v0.0.3, by FsaxZ");
 		loadResources();
 		Printer.print(Assignment.assign(seatGruops, females,males));
 	}
